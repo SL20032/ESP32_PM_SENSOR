@@ -53,7 +53,6 @@ void onboard_led_init(void)
     gpio_set_direction(ESP_ONBOARD,GPIO_MODE_OUTPUT);
 }
 
-//=================================MAIN_APP=========================================================
 void app_main(void)
 {
     USART_Init();
