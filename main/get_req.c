@@ -1,17 +1,4 @@
-#include <string.h>
-#include <stdlib.h>
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-
-#include "esp_log.h"
-#include "esp_system.h"
-#include "nvs_flash.h"
-#include "esp_event.h"
-#include "esp_netif.h"
-#include "driver/gpio.h"
-#include "esp_tls.h"
 #include "get_req.h"
-#include "esp_http_client.h"
 
 static const char *TAG = "HTTP_CLIENT";
 
@@ -124,7 +111,49 @@ void http_rest_with_url(char* buf, char* host_ip, char* host_path)
 }
 
 
+void httpd_send_data(int pm10, int pm25, int pm1)
+{
+    uint8_t en_data = 0;
+    read_uint8_from_nvs(NVS_REQ_ACTIVATION_0,&en_data);
+    if (en_data == 1)
+    {
+        char*  httpd_req;
+        char*  host_ip;
+        char*  host_path;
+        char*  host_pass;
+        
+        httpd_req = malloc(200);
+        memset(httpd_req,0,200);
 
+        host_pass = malloc(100);
+        memset(host_pass,0,100);
+
+        read_str_from_nvs(NVS_REQ_PASS_0,host_pass);
+        sprintf(httpd_req,"pass=%s&pm1=%d&pm25=%d&pm10=%d",(char*)host_pass,pm1,pm25,pm10);
+        free(host_pass);
+
+        host_ip = malloc(100);
+        memset(host_ip,0,100);
+
+        host_path = malloc(100);
+        memset(host_path,0,100);
+
+        read_str_from_nvs(NVS_REQ_HOST_IP_0,host_ip);
+        read_str_from_nvs(NVS_REQ_HOST_PATH_0,host_path);
+        http_rest_with_url(httpd_req,(char*)host_ip,(char*)host_path);
+        
+        free(httpd_req);
+        free(host_ip);
+        free(host_path);
+    }
+    
+    
+    
+    
+    
+    
+    
+}
 
 
 

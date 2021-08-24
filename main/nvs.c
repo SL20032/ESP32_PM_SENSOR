@@ -65,15 +65,18 @@ esp_err_t read_str_from_nvs(const char* nvs_key,char* nvs_data)
   }
 }
 
-esp_err_t read_uint8_from_nvs(const char* nvs_key,uint8_t nvs_data)
+esp_err_t read_uint8_from_nvs(const char* nvs_key,uint8_t *nvs_data)
 {
   nvs_handle_t nvs_read_uint8_handle;
+  uint8_t data_readed;
   //opening NVS handle
   esp_err_t ret = nvs_open("config_data", NVS_READWRITE, &nvs_read_uint8_handle);
   if (ret == ESP_OK)
   {
-    ret = nvs_get_u8(nvs_read_uint8_handle,nvs_key,&nvs_data);
-    ESP_LOGI(TAG,"NVS read: %d",nvs_data);
+    ret = nvs_get_u8(nvs_read_uint8_handle,nvs_key,&data_readed);
+    ESP_LOGI(TAG,"NVS read: %d",data_readed);
+    *nvs_data = data_readed;
+
     nvs_close(nvs_read_uint8_handle);
     return ((ret != ESP_OK) ? ESP_FAIL : ESP_OK);
   }

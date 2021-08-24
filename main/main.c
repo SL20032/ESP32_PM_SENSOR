@@ -26,7 +26,7 @@
 #include "freertos/event_groups.h"
 
 
-#define ESP_MODE_PIN 18   //32  
+#define ESP_MODE_PIN 32  
 #define ESP_ONBOARD 2
 
 char buffer123[100];
@@ -112,16 +112,11 @@ void app_main(void)
     {
         if (!(is_config_mode))       
         {
-            char*  http_req;
             esp_err_t err = USART_SeadData(&pm1,&pm25,&pm10);
             if (err == ESP_OK)
             {
                 serwer_data_update(pm10,pm25,pm1);
-            
-                http_req = malloc(100);
-                sprintf(http_req,"pass=12345678&pm1=%d&pm25=%d&pm10=%d",pm1,pm25,pm10);
-                http_rest_with_url(http_req,"10.14.1.103","/main");
-                free(http_req);  
+                httpd_send_data(pm10,pm25,pm1);         
             }
     
             vTaskDelay(10000 / portTICK_PERIOD_MS);
