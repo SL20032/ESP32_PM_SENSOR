@@ -129,14 +129,25 @@ static esp_err_t wifi_config_handler(httpd_req_t *req)
     httpd_resp_sendstr_chunk(req,
     "<html>"
     "<body style='background-color:gray;color:white;'>"
-    "<h1>ROZDZIELNIA: Configuration Mode</h1>"
-    "<h2>change wifi data and master password</h2>"
+    "<h1>SMOG sensor: Configuration Mode</h1>"
+    "<h2>change wifi data and wireless communication options</h2>"
     "<br>"
     "<form>"
+        "<p>WiFi options:</p>"
         "<label for='wifissid'>WiFi ssid:</label><br>"
-        "<input type='text' id='wifissid' name='wifissid' value = 'myssid'><br>"
+        "<input type='text' id='wifissid' name='wifissid' value = 'myssid' size='50'><br>"
         "<label for='wifipass'>WiFi password:</label><br>"
-        "<input type='password' id='wifipass' name='wifipass' value = 'pass'><br>"
+        "<input type='text' id='wifipass' name='wifipass' value = 'pass' size='50'><br>"
+        "<br>"
+        "<p>Wireless communication options:</p>"
+        "<input type ='checkbox' id='req_send_0_en' name='req0en' value='ok'"
+        "<label for= 'req_send_0_en'>Enable wireless sending data chanell 0</label><br><br>"
+        "<label for='reqhostip'>Wireless communication chanell 0 target ip:</label><br>"
+        "<input type='text' id='reqhostip' name='reqhostip' size='50'><br>"
+        "<label for='reqhostpath'>Wireless communication chanell 0 target path:</label><br>"
+        "<input type='text' id='reqhostpath' name='reqhostpath' size='50'><br>"
+        "<label for='reqhostpass'>Wireless communication chanell 0 target password:</label><br>"
+        "<input type='text' id='reqhostpass' name='reqhostpass' size='50'><br><br>"
         "<input type='submit' value='send'>"
     "</form>");
 
@@ -154,7 +165,7 @@ static esp_err_t wifi_config_handler(httpd_req_t *req)
 
 
         ESP_LOGI(TAG, "Found URL query key value after decoding => %s", wifi_ssid);
-        write_to_nvs(NVS_WIFI_SSID_KEY,wifi_ssid);
+        write_str_to_nvs(NVS_WIFI_SSID_KEY,wifi_ssid);
     }
 
     memset(data_to_analize,0,100); 
@@ -169,11 +180,11 @@ static esp_err_t wifi_config_handler(httpd_req_t *req)
 
 
         ESP_LOGI(TAG, "Found URL query key value after decoding => %s", wifi_pass);
-        write_to_nvs(NVS_WIFI_PASS_KEY,wifi_pass);
+        write_str_to_nvs(NVS_WIFI_PASS_KEY,wifi_pass);
     }
 
-    read_from_nvs(NVS_WIFI_SSID_KEY,wifi_ssid);
-    read_from_nvs(NVS_WIFI_PASS_KEY,wifi_pass);
+    read_str_from_nvs(NVS_WIFI_SSID_KEY,wifi_ssid);
+    read_str_from_nvs(NVS_WIFI_PASS_KEY,wifi_pass);
 
     char* web_serwer_data;
     web_serwer_data = malloc(200);

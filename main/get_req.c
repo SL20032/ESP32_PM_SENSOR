@@ -88,14 +88,14 @@ esp_err_t _http_event_handler(esp_http_client_event_t *evt)
     return ESP_OK;
 }
 
-void http_rest_with_url(char* buf)
+void http_rest_with_url(char* buf, char* host_ip, char* host_path)
 {
     char local_response_buffer[MAX_HTTP_OUTPUT_BUFFER] = {0};
     gpio_set_level(12,1);
    
     esp_http_client_config_t config = {
-        .host = "10.14.1.103",
-        .path = "/main",
+        .host = host_ip,
+        .path = host_path,
         .query = buf,
         .event_handler = _http_event_handler,
     };
@@ -121,7 +121,11 @@ void http_rest_with_url(char* buf)
 
     //zakończ połączenie z serwerem
     esp_http_client_cleanup(client);
-	
-
-   
 }
+
+
+
+
+
+
+
