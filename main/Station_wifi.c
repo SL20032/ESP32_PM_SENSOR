@@ -84,8 +84,8 @@ void wifi_init_sta(void)
     wifi_ssid_nvs = malloc(32);
     memset(wifi_pass_nvs,0,64);
     memset(wifi_ssid_nvs,0,32);
-    read_from_nvs(NVS_WIFI_PASS_KEY,wifi_pass_nvs);
-    read_from_nvs(NVS_WIFI_SSID_KEY,wifi_ssid_nvs);
+    read_str_from_nvs(NVS_WIFI_PASS_KEY,wifi_pass_nvs);
+    read_str_from_nvs(NVS_WIFI_SSID_KEY,wifi_ssid_nvs);
 
     strcpy((char*)wifi_config_sta.sta.ssid,wifi_ssid_nvs);   
     strcpy((char*)wifi_config_sta.sta.password,wifi_pass_nvs);  

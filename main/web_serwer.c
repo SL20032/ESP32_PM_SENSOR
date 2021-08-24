@@ -114,31 +114,39 @@ static esp_err_t wifi_config_handler(httpd_req_t *req)
 {
     char* req_buf;
     char* data_to_analize;
-    char* wifi_pass;
-    char* wifi_ssid;
-    char* master_pass;
+    char* decoded_data;
+    decoded_data = malloc(100);
     data_to_analize = malloc(100);
-    wifi_pass = malloc(100);
-    wifi_ssid = malloc(100);
-    master_pass = malloc(100);
-    memset(wifi_pass,0,100);
-    memset(wifi_ssid,0,100);  
-    memset(master_pass,0,100);    
+    memset(decoded_data,0,100); 
+    memset(data_to_analize,0,100);    
 
     //first chunk of response
     httpd_resp_sendstr_chunk(req,
     "<html>"
     "<body style='background-color:gray;color:white;'>"
-    "<h1>ROZDZIELNIA: Configuration Mode</h1>"
-    "<h2>change wifi data and master password</h2>"
+    "<h1>SMOG sensor: Configuration Mode</h1>"
+    "<h2>change wifi data and wireless communication options</h2>"
     "<br>"
     "<form>"
+        "<p>WiFi options:</p>"
         "<label for='wifissid'>WiFi ssid:</label><br>"
-        "<input type='text' id='wifissid' name='wifissid' value = 'myssid'><br>"
+        "<input type='text' id='wifissid' name='wifissid' value = 'myssid' size='50'><br>"
         "<label for='wifipass'>WiFi password:</label><br>"
-        "<input type='password' id='wifipass' name='wifipass' value = 'pass'><br>"
+        "<input type='text' id='wifipass' name='wifipass' value = 'pass' size='50'><br>"
+        "<br>"
+        "<p>Wireless communication options:</p>"
+        "<input type ='checkbox' id='req_send_0_en' name='req0en' value='ok'"
+        "<label for= 'req_send_0_en'>Enable wireless sending data chanell 0</label><br><br>"
+        "<label for='reqhostip'>Wireless communication chanell 0 target ip:</label><br>"
+        "<input type='text' id='reqhostip' name='reqhostip' size='50'><br>"
+        "<label for='reqhostpath'>Wireless communication chanell 0 target path:</label><br>"
+        "<input type='text' id='reqhostpath' name='reqhostpath' size='50'><br>"
+        "<label for='reqhostpass'>Wireless communication chanell 0 target password:</label><br>"
+        "<input type='text' id='reqhostpass' name='reqhostpass' size='50'><br><br>"
         "<input type='submit' value='send'>"
-    "</form>");
+    "</form>"
+    "</body>"
+    "</html>");
 
    
 
@@ -149,52 +157,68 @@ static esp_err_t wifi_config_handler(httpd_req_t *req)
     esp_err_t res = httpd_query_key_value(req_buf,"wifissid",data_to_analize,100);
     if (res == ESP_OK && data_to_analize[0] != 0)
     {
-        ESP_LOGI(TAG, "Found URL query key value => %s", data_to_analize);
-        special_char_decoder(data_to_analize,wifi_ssid);
-
-
-        ESP_LOGI(TAG, "Found URL query key value after decoding => %s", wifi_ssid);
-        write_to_nvs(NVS_WIFI_SSID_KEY,wifi_ssid);
+        special_char_decoder(data_to_analize,decoded_data);
+        write_str_to_nvs(NVS_WIFI_SSID_KEY,decoded_data);
     }
 
     memset(data_to_analize,0,100); 
+    memset(decoded_data,0,100); 
+    res = ESP_FAIL;
 
-
-
-    esp_err_t res1 = httpd_query_key_value(req_buf,"wifipass",data_to_analize,100);
-    if (res1 == ESP_OK && data_to_analize[0] != 0)
-    {
-        ESP_LOGI(TAG, "Found URL query key value => %s", data_to_analize);
-        special_char_decoder(data_to_analize,wifi_pass);
-
-
-        ESP_LOGI(TAG, "Found URL query key value after decoding => %s", wifi_pass);
-        write_to_nvs(NVS_WIFI_PASS_KEY,wifi_pass);
+    res = httpd_query_key_value(req_buf,"wifipass",data_to_analize,100);
+    if (res == ESP_OK && data_to_analize[0] != 0)
+    {   
+        special_char_decoder(data_to_analize,decoded_data);
+        write_str_to_nvs(NVS_WIFI_PASS_KEY,decoded_data);
     }
 
-    read_from_nvs(NVS_WIFI_SSID_KEY,wifi_ssid);
-    read_from_nvs(NVS_WIFI_PASS_KEY,wifi_pass);
+    memset(data_to_analize,0,100);
+    memset(decoded_data,0,100); 
+    res = ESP_FAIL;
 
-    char* web_serwer_data;
-    web_serwer_data = malloc(200);
-    
-    sprintf(web_serwer_data,"<br><p>Current WiFi SSID: %s</p><p>Current WiFi pass: %s</p>",wifi_ssid,wifi_pass);
+    res = httpd_query_key_value(req_buf,"req0en",data_to_analize,100);
+    if (res == ESP_OK && data_to_analize[0] != 0)
+    {
+        write_uint8_to_nvs(NVS_REQ_ACTIVATION_0,1);
 
-    //data part of response
-    httpd_resp_sendstr_chunk(req,
-        web_serwer_data
-    );
+        res = ESP_FAIL;
+        memset(data_to_analize,0,100);
+        memset(decoded_data,0,100); 
+        res = httpd_query_key_value(req_buf,"reqhostip",data_to_analize,100);
+        if (res == ESP_OK && data_to_analize[0] != 0)
+        {
+            special_char_decoder(data_to_analize,decoded_data);
+            write_str_to_nvs(NVS_REQ_HOST_IP_0,decoded_data);
+        }
 
-    free(web_serwer_data);
+        res = ESP_FAIL;
+        memset(data_to_analize,0,100);
+        memset(decoded_data,0,100); 
+        res = httpd_query_key_value(req_buf,"reqhostpath",data_to_analize,100);
+        if (res == ESP_OK && data_to_analize[0] != 0)
+        {
+            special_char_decoder(data_to_analize,decoded_data);
+            write_str_to_nvs(NVS_REQ_HOST_PATH_0,decoded_data);
+        }
 
-    httpd_resp_sendstr_chunk(req,
-        "</body>"
-        "</html>"
-    );
+        res = ESP_FAIL;
+        memset(data_to_analize,0,100);
+        memset(decoded_data,0,100); 
+        res = httpd_query_key_value(req_buf,"reqhostpass",data_to_analize,100);
+        if (res == ESP_OK && data_to_analize[0] != 0)
+        {
+            special_char_decoder(data_to_analize,decoded_data);
+            write_str_to_nvs(NVS_REQ_PASS_0,decoded_data);
+        }
 
-    
+    }
+    else
+    {
+        write_uint8_to_nvs(NVS_REQ_ACTIVATION_0,0);
+    }
+
     //last chunk of response
-     httpd_resp_send_chunk(req, NULL, 0);
+    httpd_resp_send_chunk(req, NULL, 0);
 
     /* After sending the HTTP response the old HTTP request
      * headers are lost. Check if HTTP request headers can be read now. */
@@ -205,9 +229,8 @@ static esp_err_t wifi_config_handler(httpd_req_t *req)
 
     free(req_buf);
     free(data_to_analize);
-    free(wifi_pass);
-    free(wifi_ssid);
-    free(master_pass);
+    free(decoded_data);
+
 }
 
 static const httpd_uri_t wifi_config = {
