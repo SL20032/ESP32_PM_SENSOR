@@ -4,5 +4,5 @@ option to display the data on data pad (for more info go: https://github.com/SL2
 
 #TODO
 - clean up code 
-- add more configuration options
+- add more configuration options - done
 - prepare and upload an schematic of device
