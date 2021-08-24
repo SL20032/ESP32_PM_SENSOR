@@ -12,11 +12,13 @@
 #include "esp_system.h"
 #include <string.h>
 
+#include "driver/gpio.h"
+
 
 #define TXD_PIN (GPIO_NUM_4)
 #define RXD_PIN (GPIO_NUM_5)
 
-static const int RX_BUF_SIZE = 65;
+static const int RX_BUF_SIZE = 256;
 
 void USART_Init(void);
 int USART_SendData(const char* data);

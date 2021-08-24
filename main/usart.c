@@ -40,17 +40,31 @@ esp_err_t USART_SeadData(int *PM1,int *PM25,int *PM10)
         {
             if (buf[i] == 0x42 && buf[i + 1] == 0x4d)
             {
-                wynik[0] = buf[i + 10]; //pm1
-                wynik[1] = buf[i + 11];
-                wynik[2] = buf[i + 12]; //pm25
-                wynik[3] = buf[i + 13];
-                wynik[4] = buf[i + 14]; //pm10
-                wynik[5] = buf[i + 15];
-                *PM1 = (wynik[0]<<8) + wynik[1];
-                *PM25 = (wynik[2]<<8) + wynik[3];
-                *PM10 = (wynik[4]<<8) + wynik[5];
-                return ESP_OK;                
-                break;
+                int calculated_checksum = 0;
+                int give_checksum = 0;
+                for (int indeks = i; indeks < i + 30; indeks++)
+                {
+                    calculated_checksum = calculated_checksum + buf[indeks + i];
+                    calculated_checksum = calculated_checksum & 0xFFFF;
+                }
+                give_checksum = (buf[i + 30]<<8) + buf[i + 31];
+                if (give_checksum == calculated_checksum)
+                {
+                    wynik[0] = buf[i + 10]; //pm1
+                    wynik[1] = buf[i + 11];
+                    wynik[2] = buf[i + 12]; //pm25
+                    wynik[3] = buf[i + 13];
+                    wynik[4] = buf[i + 14]; //pm10
+                    wynik[5] = buf[i + 15];
+                    *PM1 = (wynik[0]<<8) + wynik[1];
+                    *PM25 = (wynik[2]<<8) + wynik[3];
+                    *PM10 = (wynik[4]<<8) + wynik[5];
+                    return ESP_OK;                
+                }
+                else
+                {
+                    return ESP_FAIL;
+                }
             }
             i++;
         }    
