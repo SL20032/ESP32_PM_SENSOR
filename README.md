@@ -1,4 +1,9 @@
 # ESP32 Air Quality monitor system
+<p align="center">
+  <img src="https://img.shields.io/badge/Made_by-SL20032-orange"/>
+  <img src="https://img.shields.io/badge/Version-1.0-green"/>
+  <img src="https://img.shields.io/badge/Platform-ESP32-blue"/>
+</p>
 Based on ESP32 as a controler and PMS5003 as a sensor used for monitoring of air quality. 
 For dysplaying data it uses a HTTP site (hosted by ESP) 
 
