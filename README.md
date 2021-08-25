@@ -16,7 +16,8 @@ For dysplaying data it uses a HTTP site (hosted by ESP)
 - ability to send httpd requests to upload data for specyfy web serwer
 
 ## Schematic of device
-- add schematic
+
+![](schematic/PMS_sensor.jpg)
 
 ## TODO
 - format the code
