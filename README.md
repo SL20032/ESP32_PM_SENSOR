@@ -21,4 +21,3 @@ For dysplaying data it uses a HTTP site (hosted by ESP)
 
 ## TODO
 - format the code
-- prepare and upload an schematic of device
