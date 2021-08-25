@@ -1,8 +1,15 @@
-# ESP32 PM sensor system
-Display data at http site 
-option to display the data on data pad (for more info go: https://github.com/SL20032/Smog-data-padd)
+# ESP32 PM monitor system
+- Based on ESP32 as a controler and PMS5003 as a sensor used for monitoring of air quality. 
+For dysplaying data it uses a HTTP site (hosted by ESP) 
 
-#TODO
+## Feature
+
+
+
+
+
+
+## TODO
 - clean up code 
 - add more configuration options - done
 - prepare and upload an schematic of device

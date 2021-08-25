@@ -54,36 +54,64 @@ static esp_err_t main_site_handler(httpd_req_t *req1)
 {
     
     char* data_mem;
-    data_mem = malloc(200);
+    data_mem = malloc(400);
     
     httpd_resp_sendstr_chunk(req1,
         "<html>"
         "<head>"
         "<style>"
-        "h1 {text-align: left;}"
-        "h2 {text-align: left;}"
-        "h3 {text-align: center;}"
-        "p {text-align: left;}"
+
+        ".sensor_data {"
+            "background-color: grey;"
+            "color: white;"
+            "/*border: 6px solid black;*/"
+            "margin: 20px;"
+            "padding: 30px;"
+            "font-size: 20px;}"
+
+        "header {"
+            "background-color: grey;"
+            "padding: 40px;"
+            "text-align: center;"
+            "font-size: 35px;"
+            "color: white;}"
+
+        "article {"
+            "padding: 40px;"
+            "background-color: #f1f1f1;"
+            "height: 500px;}"
+
+        "footer {"
+            "padding: 40px;"
+            "background-color: grey;"
+            "text-align: center;"
+            "color: white;"
+            "height: 150px;}"
+
         "</style>"
         "</head>"
-        "<body style='background-color:gray;color:white;'>"
-        "<h1>STAN JAKOSCI POWIETRZA</h1>"
-        "<h2>Normy jakosci powietrza</h2>"
-        "<p>wartosc nory dla pm10: 50 ug/m3</p>"
-        "<p>wartosc nory dla pm2.5: 40 ug/m3</p>"
-        "<h2>aktualne wartosci</h2>"
+        "<body>"
+
+        "<header>"
+            "<h1>Smog Monitoring Station</h1>"
+        "</header>"
     );
 
-    sprintf(data_mem,"<p>pm1.0: %dug/m3</p><p>pm2.5: %dug/m3</p><p>pm10: %dug/m3</p>",serwer_data.pm1,serwer_data.pm25,serwer_data.pm10);
+    sprintf(data_mem,"<article><div class='sensor_data'><p>PM1: %dug/m3</p></div><br><div class='sensor_data'><p>PM25: %dug/m3</p></div>"
+                     "<br><div class='sensor_data'><p>PM10: %dug/m3</p></div></article>",serwer_data.pm1,serwer_data.pm25,serwer_data.pm10);
+
     
     httpd_resp_sendstr_chunk(req1,data_mem);
 
     httpd_resp_sendstr_chunk(req1,
+        "<footer>"
         "<br>"
         "<br>"
         "<br>"
         "<br>"
-        "<h3>Designed by Stanislaw Lisek</h3>"
+        "<br>"
+        "<h1>Design by Stanislaw Lisek   2021</h1>"
+        "</footer>"
         "</body>"
         "</html>"
     );  
