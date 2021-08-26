@@ -21,3 +21,4 @@ For dysplaying data it uses a HTTP site (hosted by ESP)
 
 ## TODO
 - format the code
+- enable Watchdog timer on esp32
